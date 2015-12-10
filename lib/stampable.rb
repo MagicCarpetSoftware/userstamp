@@ -22,33 +22,6 @@ module Ddb #:nodoc:
         super
 
         base.extend(ClassMethods)
-        base.class_eval do
-          include InstanceMethods
-
-          # Should ActiveRecord record userstamps? Defaults to true.
-          class_attribute  :record_userstamp
-          self.record_userstamp = true
-
-          # Which class is responsible for stamping? Defaults to :user.
-          class_attribute  :stamper_class_name
-
-          # What column should be used for the creator stamp?
-          # Defaults to :creator_id when compatibility mode is off
-          # Defaults to :created_by when compatibility mode is on
-          class_attribute  :creator_attribute
-
-          # What column should be used for the updater stamp?
-          # Defaults to :updater_id when compatibility mode is off
-          # Defaults to :updated_by when compatibility mode is on
-          class_attribute  :updater_attribute
-
-          # What column should be used for the deleter stamp?
-          # Defaults to :deleter_id when compatibility mode is off
-          # Defaults to :deleted_by when compatibility mode is on
-          class_attribute  :deleter_attribute
-
-          self.stampable unless self.respond_to?('stampable')
-        end
       end
 
       module ClassMethods
@@ -84,6 +57,29 @@ module Ddb #:nodoc:
             :deleter            => options.has_key?(:deleter_attribute),
             :with_deleted       => false
           }.merge(options)
+
+          send :include, InstanceMethods
+          # Should ActiveRecord record userstamps? Defaults to true.
+          class_attribute  :record_userstamp
+          self.record_userstamp = true
+
+          # Which class is responsible for stamping? Defaults to :user.
+          class_attribute  :stamper_class_name
+
+          # What column should be used for the creator stamp?
+          # Defaults to :creator_id when compatibility mode is off
+          # Defaults to :created_by when compatibility mode is on
+          class_attribute  :creator_attribute
+
+          # What column should be used for the updater stamp?
+          # Defaults to :updater_id when compatibility mode is off
+          # Defaults to :updated_by when compatibility mode is on
+          class_attribute  :updater_attribute
+
+          # What column should be used for the deleter stamp?
+          # Defaults to :deleter_id when compatibility mode is off
+          # Defaults to :deleted_by when compatibility mode is on
+          class_attribute  :deleter_attribute
 
           self.stamper_class_name = defaults[:stamper_class_name].to_sym
           self.creator_attribute  = defaults[:creator_attribute].to_sym
